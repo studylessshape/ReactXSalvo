@@ -1,0 +1,11 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+salvo = { version = "0.76.2", features = ["cors", "logging", "oapi"] }
+time = "0.3.37"
+tokio = { version = "1.43.0", features = ["macros"] }
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["local-time", "time"] }
