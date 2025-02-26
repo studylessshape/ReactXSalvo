@@ -21,16 +21,13 @@ tokio = { version = "1.43.0", features = ["macros", "signal"] }
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["local-time", "time"] }
 clap = "4.5.31"
-rust-embed = "8.6.0"
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
 salvo = { workspace = true }
-rust-embed = { workspace = true }
 serde = { workspace = true }
 test_crates = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-regex = "1.11.1"

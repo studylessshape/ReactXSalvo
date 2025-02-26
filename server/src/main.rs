@@ -1,7 +1,7 @@
 use std::fmt::Debug;
 
 use clap::Parser;
-use salvo::{cors::Cors, http::Method, oapi::extract::{FormBody, QueryParam}, prelude::*, routing::PathFilter};
+use salvo::{oapi::extract::{FormBody, QueryParam}, prelude::*};
 use server::cli::StartArgs;
 use ::time::{macros::format_description, UtcOffset};
 use tracing_subscriber::fmt::time::OffsetTime;
@@ -37,14 +37,7 @@ async fn main() {
 
     let router = router_build();
 
-    let cors = Cors::new()
-        .allow_origin("*")
-        .allow_methods(vec![Method::GET, Method::POST, Method::PATCH, Method::PUT, Method::DELETE, Method::HEAD, Method::CONNECT, Method::TRACE])
-        .into_handler();
-
-    let mut service = Service::new(router)
-        // .hoop(Logger::new())
-        .hoop(cors);
+    let mut service = Service::new(router);
     
     if args.debug {
         service = service.hoop(Logger::new());
@@ -72,8 +65,6 @@ fn tracing_init() {
 }
 
 fn router_build() -> Router {
-    let static_rule = regex::Regex::new("(static|assets)").unwrap();
-    PathFilter::register_wisp_regex("static_files", static_rule);
     let router = Router::new()
         .push(
             Router::with_path("/api")
