@@ -1,10 +1,9 @@
 import { get, post } from "./request";
 
-export async function hello(name = null) {
+export async function hello(name: string | String | null = null) {
     let params = null;
     if (name != null) {
-        const obj = { name: name };
-        params = new URLSearchParams(obj);
+        params = { name: name };
     }
     return await get("/api/hello", params);
 }
