@@ -6,6 +6,7 @@ import { Button, ConfigProvider, Input, theme } from "antd";
 import FeedbackForm from "./Tutorial";
 import * as hello from "./api/hello.ts";
 import "virtual:uno.css";
+import TravelPlan from "./TravelPlan.tsx";
 
 function App() {
   const [helloText, setHelloText] = useState("");
@@ -27,6 +28,7 @@ function App() {
         <p>{responseText}</p>
         <Button onClick={handleSubmit}>Send</Button>
         <FeedbackForm />
+        <TravelPlan />
       </ConfigProvider>
     </>
   );

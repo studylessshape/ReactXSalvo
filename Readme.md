@@ -26,4 +26,4 @@ Run [node-build.sh](./node-build.sh) or [node-build.bat](./node-build.bat)
 
 ### Use bun
 
-Run [bun-build.sh](./node-build.sh) or [bun-build.bat](./node-build.bat)
+Run [bun-build.sh](./bun-build.sh) or [bun-build.bat](./bun-build.bat)
