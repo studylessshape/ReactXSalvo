@@ -5,29 +5,44 @@ edition = "2021"
 
 [workspace]
 resolver = "2"
-members = ["crates/test_crates"]
 
 [workspace.dependencies]
-salvo = { version = "0.76.2", features = [
-    "cors",
-    "logging",
-    "oapi",
-    "serve-static",
-] }
-serde = { version = "1.0.218", features = ["derive"] }
+salvo = { version = "0.78", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
 test_crates = { path = "crates/test_crates" }
-time = "0.3.37"
-tokio = { version = "1.43.0", features = ["macros", "signal"] }
-tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.19", features = ["local-time", "time"] }
-clap = "4.5.31"
+time = "0.3"
+tokio = { version = "1", features = ["macros", "signal"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["local-time", "time"] }
+clap = "4.5"
+rbs = { version = "4.5" }
+rbatis = { version = "4.5" }
+rbdc-pg = { version = "4.5" }
+validator = { version = "0.20", features = ["derive"] }
+ulid = "1.2.1"
+jsonwebtoken = "9"
+anyhow = "1.0"
+figment = { version = "0.10", features = ["toml", "env"] }
+argon2 = "0.5"
+cookie = "0.18"
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
 salvo = { workspace = true }
 serde = { workspace = true }
-test_crates = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+rbs = { workspace = true }
+rbatis = { workspace = true }
+rbdc-pg = { workspace = true }
+ulid = { workspace = true }
+validator = { workspace = true }
+jsonwebtoken = { workspace = true }
+anyhow = { workspace = true }
+figment = { workspace = true }
+cookie = { workspace = true }
+argon2 = { workspace = true }
+rand = "0.9"
+thiserror = "2.0.12"

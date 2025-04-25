@@ -6,8 +6,7 @@ use std::{
 use ::time::{macros::format_description, UtcOffset};
 use clap::Parser;
 use salvo::{
-    oapi::extract::{FormBody, QueryParam},
-    prelude::*,
+    http::body, oapi::extract::{FormBody, QueryParam}, prelude::*
 };
 use server::cli::StartArgs;
 use tracing_subscriber::fmt::time::OffsetTime;
@@ -15,24 +14,6 @@ use tracing_subscriber::fmt::time::OffsetTime;
 #[endpoint]
 async fn hello(name: QueryParam<String, false>) -> String {
     format!("Hello, {}!", name.as_deref().unwrap_or("world"))
-}
-
-#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
-struct AddFormBody {
-    left: u64,
-    right: u64,
-}
-
-#[derive(serde::Serialize, serde::Deserialize, ToSchema)]
-struct AddResult {
-    result: u64,
-}
-
-#[endpoint]
-async fn add(body: FormBody<AddFormBody>) -> Json<AddResult> {
-    Json(AddResult {
-        result: test_crates::add(body.left, body.right),
-    })
 }
 
 #[tokio::main]
@@ -108,7 +89,6 @@ fn router_build() -> Router {
         .push(
             Router::with_path("/api")
                 .push(Router::with_path("/hello").get(hello))
-                .push(Router::with_path("/add").post(add)),
         )
         .push(
             Router::with_path("{*path}").get(

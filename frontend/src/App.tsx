@@ -1,34 +1,54 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import { Button, ConfigProvider, Input, theme } from "antd";
-import FeedbackForm from "./Tutorial";
-import * as hello from "./api/hello.ts";
+import { Button, ConfigProvider, Divider } from "antd";
 import "virtual:uno.css";
-import TravelPlan from "./TravelPlan.tsx";
+import Layout from "./layout/Layout.tsx";
+import { Outlet, useLocation, useNavigate } from "react-router";
+import ChangeThemeButton from "./layout/ChangeThemeButton.tsx";
+import { useAppSelector } from "./hooks/redux.ts";
 
 function App() {
-  const [helloText, setHelloText] = useState("");
-  const [responseText, setResponseText] = useState("");
+  const themes = useAppSelector((state) => state.theme.value);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isLoginRoute = location.pathname === "/login";
 
-  function handleSubmit() {
-    hello.hello(helloText).then((res) => res.text()).then((res) =>
-      setResponseText(res)
+  function LoginButton() {
+    if (isLoginRoute) return <></>;
+
+    return (
+      <Button
+        type="primary"
+        onClick={() => {
+          navigate("/login");
+        }}
+      >
+        Log In
+      </Button>
     );
   }
 
   return (
     <>
-      <ConfigProvider>
-        <Input
-          value={helloText}
-          onChange={(e) => setHelloText(e.target.value)}
-        />
-        <p>{responseText}</p>
-        <Button onClick={handleSubmit}>Send</Button>
-        <FeedbackForm />
-        <TravelPlan />
+      <ConfigProvider
+        theme={{
+          algorithm: themes,
+        }}
+      >
+        <Layout
+          className="w-full h-full"
+          hideSideBar={isLoginRoute}
+          rightDockContent={
+            <>
+              <div className="flex flex-items-center">
+                <ChangeThemeButton />
+                <Divider type="vertical"></Divider>
+                <LoginButton />
+              </div>
+            </>
+          }
+        >
+          <Outlet />
+        </Layout>
       </ConfigProvider>
     </>
   );
