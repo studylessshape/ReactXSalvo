@@ -1,14 +1,9 @@
-use std::{
-    fs,
-    path::PathBuf,
-};
+use std::{fs, path::PathBuf};
 
 use ::time::{macros::format_description, UtcOffset};
 use clap::Parser;
-use salvo::{
-    http::body, oapi::extract::{FormBody, QueryParam}, prelude::*
-};
-use server::cli::StartArgs;
+use salvo::{oapi::extract::QueryParam, prelude::*};
+use server::{cli::StartArgs, routers::create_router};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 #[endpoint]
@@ -77,27 +72,23 @@ where
         }
         dirs.append(&mut static_dirs(sub_dir.path())?);
     }
-    return Ok(dirs);
+    Ok(dirs)
 }
 
 fn router_build() -> Router {
     let static_paths = static_dirs("./static").unwrap();
-
     tracing::info!("Static paths: {:?}", static_paths);
 
-    let router = Router::new()
-        .push(
-            Router::with_path("/api")
-                .push(Router::with_path("/hello").get(hello))
-        )
-        .push(
+    let mut router = Router::new().push(create_router());
+    if !static_paths.is_empty() {
+        router = router.push(
             Router::with_path("{*path}").get(
                 StaticDir::new([static_paths].concat())
                     .auto_list(true)
                     .defaults("index.html"),
             ),
         );
-
+    }
     let doc = OpenApi::new("server api", "0.0.1").merge_router(&router);
 
     router

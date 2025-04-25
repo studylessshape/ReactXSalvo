@@ -6,11 +6,14 @@ import { RouterProvider } from "react-router";
 import routers from "./Routers.tsx";
 import { Provider } from "react-redux";
 import store from "./store";
+import { App } from "antd";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <RouterProvider router={routers} />
+      <App className="w-full h-full">
+        <RouterProvider router={routers} />
+      </App>
     </Provider>
   </StrictMode>,
 );

@@ -1,0 +1,1 @@
+sta generate -p http://localhost:5701/api-doc/openapi.json -o ./src/services --modular

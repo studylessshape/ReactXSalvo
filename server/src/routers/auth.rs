@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::hoops::jwt;
 use crate::model::user::User;
-use crate::{json_ok, utils, JsonResult};
+use crate::{empty_ok, json_ok, utils, EmptyResult, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
 pub struct LoginData {
@@ -50,4 +50,10 @@ pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonRe
         .build();
     res.add_cookie(cookie);
     json_ok(odata)
+}
+
+#[endpoint(tags("Auth"))]
+pub async fn get_logout(res: &mut Response) -> EmptyResult {
+    res.remove_cookie("jwt_token");
+    empty_ok()
 }

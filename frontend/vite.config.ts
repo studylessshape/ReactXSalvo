@@ -15,6 +15,10 @@ export default defineConfig({
         target: 'http://localhost:5701',
         changeOrigin: true,
       },
+      '/api-doc': {
+        target: 'http://localhost:5701',
+        changeOrigin: true,
+      },
       '/wwwroot': {
         target: 'http://localhost:5701',
         changeOrigin: true,
