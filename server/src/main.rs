@@ -3,7 +3,7 @@ use std::{fs, path::PathBuf};
 use ::time::{macros::format_description, UtcOffset};
 use clap::Parser;
 use salvo::{oapi::extract::QueryParam, prelude::*};
-use server::{cli::StartArgs, routers::create_router};
+use server::{cli::StartArgs, config, routers::create_router};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 #[endpoint]
@@ -14,7 +14,7 @@ async fn hello(name: QueryParam<String, false>) -> String {
 #[tokio::main]
 async fn main() {
     tracing_init();
-
+    config::init();
     let args = StartArgs::parse();
 
     let router = router_build();
@@ -25,7 +25,7 @@ async fn main() {
         service = service.hoop(Logger::new());
     }
 
-    let acceptor = TcpListener::new("[::]:5701").bind().await;
+    let acceptor = TcpListener::new(config::get().listen_addr.clone()).bind().await;
     let server = Server::new(acceptor);
     let handle = server.handle();
 
@@ -80,18 +80,17 @@ fn router_build() -> Router {
     tracing::info!("Static paths: {:?}", static_paths);
 
     let mut router = Router::new().push(create_router());
-    if !static_paths.is_empty() {
-        router = router.push(
-            Router::with_path("{*path}").get(
-                StaticDir::new([static_paths].concat())
-                    .auto_list(true)
-                    .defaults("index.html"),
-            ),
-        );
-    }
     let doc = OpenApi::new("server api", "0.0.1").merge_router(&router);
 
-    router
+    router = router
         .push(doc.into_router("/api-doc/openapi.json"))
-        .push(SwaggerUi::new("/api-doc/openapi.json").into_router("swagger-ui"))
+        .push(SwaggerUi::new("/api-doc/openapi.json").into_router("swagger-ui"));
+
+    router.push(
+        Router::with_path("{*path}").get(
+            StaticDir::new([static_paths].concat())
+                .auto_list(true)
+                .defaults("index.html"),
+        ),
+    )
 }

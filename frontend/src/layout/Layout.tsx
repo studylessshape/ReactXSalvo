@@ -1,19 +1,14 @@
-import { Button, Layout, Menu, theme } from "antd";
+import { Layout, Menu, theme } from "antd";
 import React, { useState } from "react";
 import {
     HomeOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
     UserOutlined,
 } from "@ant-design/icons";
 import {
-    NavLink,
-    Outlet,
-    RouterProvider,
-    useLocation,
     useNavigate,
 } from "react-router";
 import Header from "./Header";
+import CollapsedButton from "./CollapsedButton";
 
 const { Sider, Content } = Layout;
 
@@ -32,28 +27,10 @@ export default function (
 
     const [collapsed, setCollapsed] = useState(false);
     const {
-        token: { colorBgContainer, borderRadiusLG, colorText },
+        token: { colorBgContainer },
     } = theme.useToken();
-    const location = useLocation();
+    const location = document.location.pathname;
     const navigate = useNavigate();
-
-    function CollapsedButton() {
-        if (hideSideBar) return <></>;
-        return (
-            <Button
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => {
-                    setCollapsed(!collapsed);
-                }}
-                type="text"
-                style={{
-                    fontSize: "18px",
-                    width: 64,
-                    height: 64,
-                }}
-            />
-        );
-    }
 
     let internalSideBar = hideSideBar ? <></> : (
         <Sider
@@ -78,8 +55,15 @@ export default function (
                             navigate("/user");
                         },
                     },
+                    {
+                        label: "test",
+                        key: "/test",
+                        onClick: () => {
+                            navigate("/test");
+                        },
+                    },
                 ]}
-                selectedKeys={[location.pathname]}
+                selectedKeys={[location]}
             >
             </Menu>
         </Sider>
@@ -89,7 +73,13 @@ export default function (
         <>
             <Layout className={className}>
                 <Header
-                    afterLogo={<CollapsedButton />}
+                    afterLogo={
+                        <CollapsedButton
+                            collapsed={collapsed}
+                            setCollapsed={setCollapsed}
+                            hideButton={hideSideBar}
+                        />
+                    }
                     rightDockContent={rightDockContent}
                 >
                 </Header>

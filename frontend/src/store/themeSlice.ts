@@ -1,28 +1,42 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { theme } from "antd";
+
+const LIGHT_THEME = "light";
+const DARK_THEME = "dark";
+const DEFAULT_THEME = LIGHT_THEME;
+
+function initializeTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+        return savedTheme;
+    }
+    return DEFAULT_THEME;
+}
+
+function saveTheme(theme: string) {
+    localStorage.setItem("theme", theme);
+}
 
 export const themeSlice = createSlice({
     name: "theme",
-    initialState: { value: [theme.defaultAlgorithm] },
+    initialState: { value: initializeTheme() },
     reducers: {
         toggleTheme: (state) => {
-            const defaultIndex = state.value.findIndex((algorithm) =>
-                algorithm == theme.defaultAlgorithm
-            );
-            if (defaultIndex != -1) {
-                state.value.splice(defaultIndex, 1, theme.darkAlgorithm);
-            } else {
-                const darkIndex = state.value.findIndex((algorithm) =>
-                    algorithm == theme.darkAlgorithm
-                );
-                if (darkIndex != -1) {
-                    state.value.splice(darkIndex, 1, theme.defaultAlgorithm);
-                }
+            switch (state.value) {
+                case LIGHT_THEME:
+                    state.value = DARK_THEME;
+                    break;
+                case DARK_THEME:
+                    state.value = DEFAULT_THEME;
+                    break;
+                default:
+                    state.value = LIGHT_THEME;
+                    break;
             }
+            saveTheme(state.value);
         },
     },
 });
 
 export const { toggleTheme } = themeSlice.actions;
-
 export default themeSlice.reducer;
+export { DARK_THEME, DEFAULT_THEME, LIGHT_THEME };

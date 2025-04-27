@@ -13,7 +13,7 @@ pub fn init() {
         ))
         .merge(Env::prefixed("APP_").global());
 
-    let mut config = match raw_config.extract::<ServerConfig>() {
+    let config = match raw_config.extract::<ServerConfig>() {
         Ok(s) => s,
         Err(e) => {
             eprintln!("It looks like your config is invalid. The following error occurred: {e}");

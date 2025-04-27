@@ -1,57 +1,82 @@
 import "./App.css";
-import { Button, ConfigProvider, Divider } from "antd";
+import { Button, Divider } from "antd";
 import "virtual:uno.css";
 import Layout from "./layout/Layout.tsx";
-import { Outlet, useLocation, useNavigate } from "react-router";
+import {
+  isRouteErrorResponse,
+  Outlet,
+  useNavigate,
+  useRouteError,
+} from "react-router";
 import ChangeThemeButton from "./layout/ChangeThemeButton.tsx";
-import { useAppSelector } from "./hooks/redux.ts";
+import { useAppSelector } from "./hooks/redux";
+import { ThemeProvider } from "antd-style";
+
+function Root({ children }: { children?: React.ReactNode }) {
+  const themes = useAppSelector((state) => state.theme.value);
+
+  return (
+    <ThemeProvider appearance={themes}>
+      {children}
+    </ThemeProvider>
+  );
+}
+
+function ErrorContent() {
+  const error = useRouteError();
+  if (isRouteErrorResponse(error)) {
+    return (
+      <>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        <p>The stack trace is:</p>
+        <pre>{error.stack}</pre>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}
 
 function App() {
-  const themes = useAppSelector((state) => state.theme.value);
-  const location = useLocation();
   const navigate = useNavigate();
-  const isLoginRoute = location.pathname === "/login";
-
-  function LoginButton() {
-    if (isLoginRoute) return <></>;
-
-    return (
-      <Button
-        type="primary"
-        onClick={() => {
-          navigate("/login");
-        }}
-      >
-        Log In
-      </Button>
-    );
-  }
+  const error = useRouteError();
 
   return (
     <>
-      <ConfigProvider
-        theme={{
-          algorithm: themes,
-        }}
+      <Layout
+        className="w-full h-full"
+        rightDockContent={
+          <>
+            <div className="flex flex-items-center">
+              <ChangeThemeButton />
+              <Divider type="vertical"></Divider>
+              <Button
+                type="primary"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Log In
+              </Button>
+            </div>
+          </>
+        }
       >
-        <Layout
-          className="w-full h-full"
-          hideSideBar={isLoginRoute}
-          rightDockContent={
-            <>
-              <div className="flex flex-items-center">
-                <ChangeThemeButton />
-                <Divider type="vertical"></Divider>
-                <LoginButton />
-              </div>
-            </>
-          }
-        >
-          <Outlet />
-        </Layout>
-      </ConfigProvider>
+        {error != null ? <ErrorContent /> : <Outlet />}
+      </Layout>
     </>
   );
 }
 
 export default App;
+export { Root };

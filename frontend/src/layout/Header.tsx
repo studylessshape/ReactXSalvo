@@ -5,8 +5,8 @@ const { Header } = Layout;
 
 export default function HeaderComponent(
     { afterLogo, rightDockContent }: {
-        afterLogo: React.ReactNode;
-        rightDockContent: React.ReactNode;
+        afterLogo?: React.ReactNode;
+        rightDockContent?: React.ReactNode;
     },
 ) {
     const {

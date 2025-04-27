@@ -2,20 +2,16 @@ import { MoonOutlined, SunOutlined } from "@ant-design/icons";
 import { Button, theme } from "antd";
 import { toggleTheme } from "../store/themeSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
-
+import { DARK_THEME } from "../store/themeSlice";
 export default function ChangeThemeButton() {
     const dispatch = useAppDispatch();
     const themes = useAppSelector((state) => state.theme.value);
-
-    const hasDark =
-        themes.findIndex((enabledTheme) =>
-            enabledTheme === theme.darkAlgorithm
-        ) != -1;
+    const isDark = themes == DARK_THEME;
     return (
         <>
             <Button
                 type="text"
-                icon={hasDark ? <MoonOutlined /> : <SunOutlined />}
+                icon={isDark ? <MoonOutlined /> : <SunOutlined />}
                 style={{
                     fontSize: "18px",
                     width: 64,
