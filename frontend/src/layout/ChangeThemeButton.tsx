@@ -1,5 +1,5 @@
 import { MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { Button, theme } from "antd";
+import { Button } from "antd";
 import { toggleTheme } from "../store/themeSlice";
 import { useAppDispatch, useAppSelector } from "../hooks/redux";
 import { DARK_THEME } from "../store/themeSlice";

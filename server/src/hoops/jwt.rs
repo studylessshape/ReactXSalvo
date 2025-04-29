@@ -9,8 +9,8 @@ use crate::config::{self, JwtConfig};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JwtClaims {
-    uid: String,
-    exp: i64,
+    pub(crate) uid: String,
+    pub(crate) exp: i64,
 }
 
 pub fn auth_hoop(config: &JwtConfig) -> JwtAuth<JwtClaims, ConstDecoder> {

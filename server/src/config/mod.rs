@@ -37,11 +37,17 @@ pub struct JwtConfig {
 }
 
 #[derive(Deserialize, Clone, Debug)]
+pub struct DbConfig {
+    pub url: String,
+}
+
+#[derive(Deserialize, Clone, Debug)]
 pub struct ServerConfig {
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
     pub jwt: JwtConfig,
+    pub db: DbConfig,
 }
 
 fn default_listen_addr() -> String {

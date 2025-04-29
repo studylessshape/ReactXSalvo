@@ -1,19 +1,38 @@
 import { createBrowserRouter } from "react-router";
-import Home from "./pages/Home";
-import User from "./pages/User";
-import Login from "./pages/Login";
-import App from "./App";
 
 const routers = createBrowserRouter([
     {
         path: "/",
-        Component: App,
+        lazy: async () => {
+            const App = (await import("./App")).default;
+            return { Component: App, ErrorBoundary: App };
+        },
         children: [
-            { index: true, Component: Home },
-            { path: "user", Component: User },
-            { path: "login", Component: Login },
+            {
+                index: true,
+                lazy: async () => {
+                    return {
+                        Component: (await import("./pages/Home")).default,
+                    };
+                },
+            },
+            {
+                path: "user",
+                lazy: async () => {
+                    return {
+                        Component: (await import("./pages/User")).default,
+                    };
+                },
+            },
+            {
+                path: "login",
+                lazy: async () => {
+                    return {
+                        Component: (await import("./pages/Login")).default,
+                    };
+                },
+            },
         ],
-        ErrorBoundary: App,
     },
 ]);
 

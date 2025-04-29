@@ -9,6 +9,11 @@ pub struct User {
     pub password: String,
 }
 
-crud!(User{});
+impl User {
+    pub const USER_TABLE: &str = "public.users";
+}
 
-impl_select!(User{select_by_account(account: String) -> Option => "`where account = #{account}`"});
+crud!(User{}, User::USER_TABLE);
+
+impl_select!(User{select_by_account(account: &str) -> Option => "`where account = #{account}`"}, User::USER_TABLE);
+impl_select!(User{select_by_id(id: &str) -> Option => "`where id = #{id}`"}, User::USER_TABLE);

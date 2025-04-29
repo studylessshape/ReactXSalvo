@@ -10,19 +10,35 @@
  * ---------------------------------------------------------------
  */
 
-export interface SalvoCoreHttpErrorsStatusErrorStatusError {
-  brief: string;
-  cause?: string;
+export interface ServerCommonAppResponseServerRoutersAuthLoginOutData {
   /**
    * @format uint16
    * @min 0
    */
   code: number;
-  detail: string;
-  name: string;
+  data?: null & ServerRoutersAuthLoginOutData;
+  message?: string | null;
 }
 
-export type ServerEmpty = object;
+export interface ServerCommonAppResponseServerRoutersUserUserInfo {
+  /**
+   * @format uint16
+   * @min 0
+   */
+  code: number;
+  data?: null & ServerRoutersUserUserInfo;
+  message?: string | null;
+}
+
+export interface ServerCommonAppResponseServerRoutersUserUserOutData {
+  /**
+   * @format uint16
+   * @min 0
+   */
+  code: number;
+  data?: null & ServerRoutersUserUserOutData;
+  message?: string | null;
+}
 
 export interface ServerRoutersAuthLoginData {
   account: string;
@@ -35,4 +51,18 @@ export interface ServerRoutersAuthLoginOutData {
   id: string;
   token: string;
   username: string;
+}
+
+export interface ServerRoutersUserAddUserInData {
+  account: string;
+  password: string;
+}
+
+export interface ServerRoutersUserUserInfo {
+  id: string;
+  username: string;
+}
+
+export interface ServerRoutersUserUserOutData {
+  id: string;
 }

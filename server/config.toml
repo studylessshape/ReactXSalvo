@@ -1,7 +1,8 @@
 listen_addr = "[::]:5701"
 
 [db]
-url = "postgres://postgres:root@127.0.0.1:5432/testproject"
+url = "postgres://postgres:123456@127.0.0.1:5432/reactxsalvo"
+# url = "mysql://root:123456@127.0.0.1:3306/reactxsalvo"
 
 [jwt]
 secret = "yoursecret"

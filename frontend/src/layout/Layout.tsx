@@ -1,21 +1,17 @@
-import { Layout, Menu, theme } from "antd";
+import { Button, Divider, Layout, Menu, theme } from "antd";
 import React, { useState } from "react";
-import {
-    HomeOutlined,
-    UserOutlined,
-} from "@ant-design/icons";
-import {
-    useNavigate,
-} from "react-router";
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router";
 import Header from "./Header";
 import CollapsedButton from "./CollapsedButton";
+import ChangeThemeButton from "./ChangeThemeButton";
+import UserBadge from "./UserBadge";
 
 const { Sider, Content } = Layout;
 
 export default function (
-    { className, rightDockContent, hideLayout, hideSideBar, children }: {
+    { className, hideLayout, hideSideBar, children }: {
         className?: string;
-        rightDockContent?: React.ReactNode;
         hideLayout?: boolean;
         hideSideBar?: boolean;
         children?: React.ReactNode;
@@ -80,7 +76,15 @@ export default function (
                             hideButton={hideSideBar}
                         />
                     }
-                    rightDockContent={rightDockContent}
+                    rightDockContent={
+                        <>
+                            <div className="flex flex-items-center">
+                                <ChangeThemeButton />
+                                <Divider type="vertical"></Divider>
+                                <UserBadge />
+                            </div>
+                        </>
+                    }
                 >
                 </Header>
                 <Layout>

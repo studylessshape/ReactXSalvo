@@ -1,26 +1,16 @@
 import "./App.css";
-import { Button, Divider } from "antd";
+import { Button, Divider, Layout as AntdLayout } from "antd";
 import "virtual:uno.css";
 import Layout from "./layout/Layout.tsx";
 import {
   isRouteErrorResponse,
   Outlet,
+  useLocation,
   useNavigate,
   useRouteError,
 } from "react-router";
 import ChangeThemeButton from "./layout/ChangeThemeButton.tsx";
-import { useAppSelector } from "./hooks/redux";
-import { ThemeProvider } from "antd-style";
-
-function Root({ children }: { children?: React.ReactNode }) {
-  const themes = useAppSelector((state) => state.theme.value);
-
-  return (
-    <ThemeProvider appearance={themes}>
-      {children}
-    </ThemeProvider>
-  );
-}
+import { useState } from "react";
 
 function ErrorContent() {
   const error = useRouteError();
@@ -50,28 +40,20 @@ function ErrorContent() {
 function App() {
   const navigate = useNavigate();
   const error = useRouteError();
-
+  const location = useLocation();
+  const showLayout = location.pathname != "/login";
+  if (!showLayout) {
+    return (
+      <AntdLayout className="w-full h-full">
+        <AntdLayout.Content>
+          <Outlet />
+        </AntdLayout.Content>
+      </AntdLayout>
+    );
+  }
   return (
     <>
-      <Layout
-        className="w-full h-full"
-        rightDockContent={
-          <>
-            <div className="flex flex-items-center">
-              <ChangeThemeButton />
-              <Divider type="vertical"></Divider>
-              <Button
-                type="primary"
-                onClick={() => {
-                  navigate("/login");
-                }}
-              >
-                Log In
-              </Button>
-            </div>
-          </>
-        }
-      >
+      <Layout className="w-full h-full">
         {error != null ? <ErrorContent /> : <Outlet />}
       </Layout>
     </>
@@ -79,4 +61,3 @@ function App() {
 }
 
 export default App;
-export { Root };

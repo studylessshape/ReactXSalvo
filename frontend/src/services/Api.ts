@@ -11,10 +11,11 @@
  */
 
 import {
-  SalvoCoreHttpErrorsStatusErrorStatusError,
-  ServerEmpty,
+  ServerCommonAppResponseServerRoutersAuthLoginOutData,
+  ServerCommonAppResponseServerRoutersUserUserInfo,
+  ServerCommonAppResponseServerRoutersUserUserOutData,
   ServerRoutersAuthLoginData,
-  ServerRoutersAuthLoginOutData,
+  ServerRoutersUserAddUserInData,
 } from "./data-contracts";
 import { ContentType, HttpClient, RequestParams } from "./http-client";
 
@@ -32,10 +33,7 @@ export class Api<
     data: ServerRoutersAuthLoginData,
     params: RequestParams = {},
   ) =>
-    this.request<
-      ServerRoutersAuthLoginOutData,
-      SalvoCoreHttpErrorsStatusErrorStatusError
-    >({
+    this.request<ServerCommonAppResponseServerRoutersAuthLoginOutData, any>({
       path: `/api/auth/login`,
       method: "POST",
       body: data,
@@ -46,13 +44,32 @@ export class Api<
   /**
    * No description
    *
-   * @tags Auth
-   * @name ServerRoutersAuthGetLogout
-   * @request GET:/api/auth/logout
+   * @tags User
+   * @name ServerRoutersUserAddUser
+   * @request POST:/api/user/add
    */
-  serverRoutersAuthGetLogout = (params: RequestParams = {}) =>
-    this.request<ServerEmpty, SalvoCoreHttpErrorsStatusErrorStatusError>({
-      path: `/api/auth/logout`,
+  serverRoutersUserAddUser = (
+    data: ServerRoutersUserAddUserInData,
+    params: RequestParams = {},
+  ) =>
+    this.request<ServerCommonAppResponseServerRoutersUserUserOutData, any>({
+      path: `/api/user/add`,
+      method: "POST",
+      body: data,
+      type: ContentType.Json,
+      format: "json",
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags User
+   * @name ServerRoutersUserGetUserProfile
+   * @request GET:/api/user/profile
+   */
+  serverRoutersUserGetUserProfile = (params: RequestParams = {}) =>
+    this.request<ServerCommonAppResponseServerRoutersUserUserInfo, any>({
+      path: `/api/user/profile`,
       method: "GET",
       format: "json",
       ...params,

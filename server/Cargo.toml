@@ -9,6 +9,7 @@ resolver = "2"
 [workspace.dependencies]
 salvo = { version = "0.78", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 test_crates = { path = "crates/test_crates" }
 time = "0.3"
 tokio = { version = "1", features = ["macros", "signal"] }
@@ -30,6 +31,7 @@ cookie = "0.18"
 clap = { workspace = true, features = ["derive"] }
 salvo = { workspace = true }
 serde = { workspace = true }
+serde_json = { workspace = true }
 time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }

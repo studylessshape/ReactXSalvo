@@ -3,7 +3,7 @@ use std::{fs, path::PathBuf};
 use ::time::{macros::format_description, UtcOffset};
 use clap::Parser;
 use salvo::{oapi::extract::QueryParam, prelude::*};
-use server::{cli::StartArgs, config, routers::create_router};
+use server::{cli::StartArgs, config, db, routers::create_router};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 #[endpoint]
@@ -15,15 +15,12 @@ async fn hello(name: QueryParam<String, false>) -> String {
 async fn main() {
     tracing_init();
     config::init();
-    let args = StartArgs::parse();
+    db::init().await.unwrap();
+    let _args = StartArgs::parse();
 
     let router = router_build();
 
-    let mut service = Service::new(router);
-
-    if args.debug {
-        service = service.hoop(Logger::new());
-    }
+    let service = Service::new(router).hoop(Logger::new());
 
     let acceptor = TcpListener::new(config::get().listen_addr.clone()).bind().await;
     let server = Server::new(acceptor);

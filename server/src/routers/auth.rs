@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::hoops::jwt;
 use crate::model::user::User;
-use crate::{empty_ok, json_ok, utils, EmptyResult, JsonResult};
+use crate::{json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
 pub struct LoginData {
@@ -25,9 +25,9 @@ pub struct LoginOutData {
 pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonResult<LoginOutData> {
     let data = data.into_inner();
     let conn = crate::db::conn()?;
-    let user = User::select_by_account(&conn, data.account).await?;
+    let user = User::select_by_account(&conn, &data.account).await?;
     if user.is_none() {
-        return Err(anyhow::anyhow!("未找到用户").into());
+        return Err(StatusError::unauthorized().brief("未找到用户").into());
     }
     let User {
         id,
@@ -47,13 +47,8 @@ pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonRe
     let cookie = Cookie::build(("jwt_token", odata.token.clone()))
         .path("/")
         .http_only(true)
+        // .expires(OffsetDateTime::from_unix_timestamp(exp).map_err(|e| StatusError::internal_server_error().brief(format!("{e}")))?)
         .build();
     res.add_cookie(cookie);
     json_ok(odata)
-}
-
-#[endpoint(tags("Auth"))]
-pub async fn get_logout(res: &mut Response) -> EmptyResult {
-    res.remove_cookie("jwt_token");
-    empty_ok()
 }
