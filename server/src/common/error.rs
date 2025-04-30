@@ -1,5 +1,5 @@
 use salvo::http::{header, ParseError, StatusCode, StatusError};
-use salvo::{oapi, prelude::*};
+use salvo::prelude::*;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -19,8 +19,8 @@ pub enum AppError {
     HttpParse(#[from] ParseError),
     #[error("anyhow error:`{0}`")]
     Anyhow(#[from] anyhow::Error),
-    #[error("rbatis::Error:`{0}`")]
-    RbatisError(#[from] rbatis::Error),
+    #[error("DatabaseError:`{0}`")]
+    DatabaseError(#[from] sea_orm::error::DbErr),
     #[error("validation error:`{0}`")]
     Validation(#[from] validator::ValidationErrors),
 }

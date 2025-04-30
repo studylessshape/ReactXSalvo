@@ -6,6 +6,9 @@ use serde::Deserialize;
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
+pub const SYSTEM_ACCOUNT: &str = "System";
+pub const SYSTEM_PASSWORD: &str = "System";
+
 pub fn init() {
     let raw_config = Figment::new()
         .merge(Toml::file(

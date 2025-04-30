@@ -1,30 +1,32 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import Cookie from 'js-cookie'
+import Cookie from "js-cookie";
 import { ServerRoutersAuthLoginOutData } from "../services/data-contracts";
 
 type UserState = ServerRoutersAuthLoginOutData | null;
 
 function initializeUser(): UserState {
-    const savedUser = Cookie.get("user");
+    const savedUser = localStorage.getItem("user");
     if (savedUser) {
         return JSON.parse(savedUser) as UserState;
     } else {
+        saveUser(null);
         return null;
     }
 }
 
 function saveUser(user: UserState) {
     if (user != null) {
-        Cookie.set("user", JSON.stringify(user), { expires: new Date(user.exp * 1000) });
+        localStorage.setItem("user", JSON.stringify(user));
     } else {
         Cookie.remove("user");
         Cookie.remove("token");
         Cookie.remove("jwt_token");
+        localStorage.removeItem("user");
     }
 }
 
 export const userSlice = createSlice({
-    name: 'currentUser',
+    name: "currentUser",
     initialState: initializeUser(),
     reducers: {
         setUser: (_state, action: PayloadAction<UserState>) => {
@@ -34,9 +36,9 @@ export const userSlice = createSlice({
         logout: () => {
             saveUser(null);
             return null;
-        }
-    }
-})
+        },
+    },
+});
 
 export const { setUser, logout } = userSlice.actions;
 export default userSlice.reducer;

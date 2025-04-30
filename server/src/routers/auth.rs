@@ -1,11 +1,12 @@
 use cookie::Cookie;
 use salvo::oapi::{extract::JsonBody, ToSchema};
 use salvo::prelude::*;
+use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 
 use crate::hoops::jwt;
-use crate::model::user::User;
-use crate::{json_ok, utils, JsonResult};
+use crate::model::{user, User, UserModel};
+use crate::{config, json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
 pub struct LoginData {
@@ -24,18 +25,27 @@ pub struct LoginOutData {
 #[endpoint(tags("Auth"))]
 pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonResult<LoginOutData> {
     let data = data.into_inner();
-    let conn = crate::db::conn()?;
-    let user = User::select_by_account(&conn, &data.account).await?;
-    if user.is_none() {
-        return Err(StatusError::unauthorized().brief("未找到用户").into());
+    let id; let username;
+    if data.account == config::SYSTEM_ACCOUNT && data.password == config::SYSTEM_PASSWORD {
+        id = config::SYSTEM_ACCOUNT.to_string();
+        username = config::SYSTEM_ACCOUNT.to_string();
     }
-    let User {
-        id,
-        account: _,
-        username,
-        password,
-    } = user.unwrap();
-    utils::verify_password(&data.password, &password)?;
+    else {
+        let conn = crate::db::conn().await?;
+        let user = User::find().filter(user::Column::Account.eq(&data.account)).one(&conn).await?;
+        if user.is_none() {
+            return Err(StatusError::unauthorized().brief("未找到用户").into());
+        }
+        let UserModel {
+            id: uid,
+            username: uname,
+            password,
+            ..
+        } = user.unwrap();
+        utils::verify_password(&data.password, &password)?;
+        id = uid;
+        username = uname;
+    }
 
     let (token, exp) = jwt::get_token(&id)?;
     let odata = LoginOutData {

@@ -16,9 +16,6 @@ tokio = { version = "1", features = ["macros", "signal"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["local-time", "time"] }
 clap = "4.5"
-rbs = { version = "4.5" }
-rbatis = { version = "4.5" }
-rbdc-pg = { version = "4.5" }
 validator = { version = "0.20", features = ["derive"] }
 ulid = "1.2.1"
 jsonwebtoken = "9"
@@ -26,6 +23,9 @@ anyhow = "1.0"
 figment = { version = "0.10", features = ["toml", "env"] }
 argon2 = "0.5"
 cookie = "0.18"
+sea-orm = { version = "1.1", features = ["sqlx-postgres", "macros", "runtime-tokio-rustls", "debug-print"]}
+rand = "0.9"
+thiserror = "2.0.12"
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
@@ -36,9 +36,6 @@ time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-rbs = { workspace = true }
-rbatis = { workspace = true }
-rbdc-pg = { workspace = true }
 ulid = { workspace = true }
 validator = { workspace = true }
 jsonwebtoken = { workspace = true }
@@ -46,5 +43,6 @@ anyhow = { workspace = true }
 figment = { workspace = true }
 cookie = { workspace = true }
 argon2 = { workspace = true }
-rand = "0.9"
-thiserror = "2.0.12"
+sea-orm = { workspace = true }
+rand = { workspace = true }
+thiserror = { workspace = true }

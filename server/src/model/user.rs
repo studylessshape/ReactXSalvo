@@ -1,19 +1,19 @@
-use rbatis::{crud, impl_select};
 use serde::{Deserialize, Serialize};
+use sea_orm::entity::prelude::*;
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct User {
+#[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq, DeriveEntityModel)]
+#[sea_orm(table_name = "sys_user")]
+pub struct Model {
+    #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
+    #[sea_orm(unique)]
     pub account: String,
     pub username: String,
     pub password: String,
+    pub create_time: DateTime,
 }
 
-impl User {
-    pub const USER_TABLE: &str = "public.users";
-}
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {}
 
-crud!(User{}, User::USER_TABLE);
-
-impl_select!(User{select_by_account(account: &str) -> Option => "`where account = #{account}`"}, User::USER_TABLE);
-impl_select!(User{select_by_id(id: &str) -> Option => "`where id = #{id}`"}, User::USER_TABLE);
+impl ActiveModelBehavior for ActiveModel {}
