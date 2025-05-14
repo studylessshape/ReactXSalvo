@@ -6,7 +6,7 @@ use sea_orm::entity::prelude::*;
 pub struct Model {
     /// 主键 ID
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     /// 角色权限关键字
     #[sea_orm(unique)]
     pub key: String,
@@ -20,6 +20,7 @@ pub struct Model {
     pub create_time: DateTime,
     /// 更新时间
     pub update_time: Option<DateTime>,
+    pub is_deleted: bool,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

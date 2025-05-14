@@ -5,7 +5,7 @@ use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 
 use crate::hoops::jwt;
-use crate::model::{user, User, UserModel};
+use crate::model::user;
 use crate::{config, json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
@@ -32,18 +32,18 @@ pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonRe
     }
     else {
         let conn = crate::db::conn().await?;
-        let user = User::find().filter(user::Column::Account.eq(&data.account)).one(&conn).await?;
+        let user = user::Entity::find().filter(user::Column::Account.eq(&data.account)).one(&conn).await?;
         if user.is_none() {
             return Err(StatusError::unauthorized().brief("未找到用户").into());
         }
-        let UserModel {
+        let user::Model {
             id: uid,
             username: uname,
             password,
             ..
         } = user.unwrap();
         utils::verify_password(&data.password, &password)?;
-        id = uid;
+        id = uid.to_string();
         username = uname;
     }
 

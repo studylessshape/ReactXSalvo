@@ -1,25 +1,10 @@
 pub mod menu;
+pub mod menu_element;
 pub mod role;
+pub mod role_menu;
+pub mod role_menu_element;
+pub mod role_user;
 pub mod user;
-
-macro_rules! entity {
-    ($(- $path: path, $name: ident)+) => {
-        $(
-            pub use $path::{Entity as $name};
-        )+
-    };
-    ($(- $path: path, $name: ident, $model_name: ident)+) => {
-        $(
-            pub use $path::{Entity as $name, Model as $model_name};
-        )+
-    };
-}
-
-entity!(
-    - user, User, UserModel
-    - menu, Menu, MenuModel
-    - role, Role, RoleModel
-);
 
 use anyhow::Result;
 
@@ -32,14 +17,27 @@ macro_rules! create_table {
         let schema = Schema::new(builder);
         $(
             let stmt = builder.build(schema.create_table_from_entity($entity).if_not_exists());
-            let _ = $conn.execute(stmt).await;
+            let res = $conn.execute(stmt).await;
+            if let Err(e) = res {
+                tracing::event!(tracing::Level::ERROR, "{}", e);
+            }
         )+
     }};
 }
 
 pub async fn init() -> Result<()> {
     let conn = conn().await?;
-    create_table!(conn, User, Menu, Role);
+    create_table!(
+        conn,
+        user::Entity,
+        menu::Entity,
+        role::Entity,
+        menu_element::Entity,
+        role_menu::Entity,
+        role_menu_element::Entity,
+        role_user::Entity
+    );
+
     conn.close().await?;
     Ok(())
 }

@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     /// 主键ID
     #[sea_orm(primary_key, auto_increment = false)]
-    pub id: String,
+    pub id: Uuid,
     /// 父级ID
-    pub parent_id: Option<String>,
+    pub parent_id: Option<Uuid>,
     /// 菜单关键字
     #[sea_orm(unique)]
     pub key: String,
@@ -32,9 +32,34 @@ pub struct Model {
     pub create_time: DateTime,
     /// 更新时间
     pub update_time: Option<DateTime>,
+    pub is_deleted: bool,
 }
 
-#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
-pub enum Relation {}
+#[derive(Copy, Clone, Debug, EnumIter)]
+pub enum Relation {
+    MenuElement,
+    RoleMenu,
+}
+
+impl RelationTrait for Relation {
+    fn def(&self) -> RelationDef {
+        match self {
+            Relation::MenuElement => Entity::has_many(super::menu_element::Entity).into(),
+            Relation::RoleMenu => Entity::has_many(super::role_menu::Entity).into(),
+        }
+    }
+}
+
+impl Related<super::menu_element::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::MenuElement.def()
+    }
+}
+
+impl Related<super::role_menu::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::RoleMenu.def()
+    }
+}
 
 impl ActiveModelBehavior for ActiveModel {}

@@ -36,7 +36,7 @@ time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-ulid = { workspace = true }
+ulid = { workspace = true, features = ["serde", "uuid"] }
 validator = { workspace = true }
 jsonwebtoken = { workspace = true }
 anyhow = { workspace = true }
@@ -46,3 +46,4 @@ argon2 = { workspace = true }
 sea-orm = { workspace = true }
 rand = { workspace = true }
 thiserror = { workspace = true }
+uuid = { version = "1.16.0", features = ["v7"] }

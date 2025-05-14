@@ -2,16 +2,15 @@ use std::io::Error;
 
 use salvo::oapi::{extract::JsonBody, ToSchema};
 use salvo::{jwt_auth, prelude::*};
+use sea_orm::prelude::Uuid;
 use sea_orm::sqlx::types::chrono;
 use sea_orm::ActiveValue::Set;
 use sea_orm::{ActiveModelTrait, ColumnTrait, DerivePartialModel, EntityTrait, FromQueryResult, QueryFilter, QuerySelect};
 use serde::{Deserialize, Serialize};
-use ulid::Ulid;
 
 use crate::error::AppError;
 use crate::hoops::jwt::JwtClaims;
 use crate::model::user;
-use crate::model::User;
 use crate::{db, json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
@@ -29,19 +28,20 @@ pub struct UserOutData {
 pub async fn add_user(user: JsonBody<AddUserInData>) -> JsonResult<UserOutData> {
     let AddUserInData { account, password } = user.into_inner();
     let conn = crate::db::conn().await?;
-    if User::find().filter(user::Column::Account.eq(&account)).select_only().column(user::Column::Id).one(&conn).await?.is_some() {
+    if user::Entity::find().filter(user::Column::Account.eq(&account)).select_only().column(user::Column::Id).one(&conn).await?.is_some() {
         return Err(AppError::Public("账户已存在".to_string()));
     }
-    let id = Ulid::new();
+    let id = Uuid::now_v7();
     let new_user = user::ActiveModel {
-        id: Set(id.to_string()),
+        id: Set(id),
         account: Set(account.clone()),
         username: Set(account),
         password: Set(utils::hash_password(&password)?),
         create_time: Set(chrono::Local::now().naive_local()),
+        ..Default::default()
     };
     let db_user = new_user.insert(&conn).await?;
-    json_ok(UserOutData { id: db_user.id })
+    json_ok(UserOutData { id: db_user.id.to_string() })
 }
 
 #[derive(Serialize, ToSchema, Default, Debug, FromQueryResult, DerivePartialModel)]
@@ -65,7 +65,7 @@ pub async fn get_user_profile(depot: &mut Depot) -> JsonResult<UserInfo> {
     })?;
     let conn = db::conn().await?;
 
-    let query = User::find_by_id(&claims.uid).into_partial_model::<UserInfo>().one(&conn).await?;
+    let query = user::Entity::find_by_id(Uuid::parse_str(&claims.uid).unwrap()).into_partial_model::<UserInfo>().one(&conn).await?;
 
     if let Some(user_info) = query {
         return json_ok(user_info);
