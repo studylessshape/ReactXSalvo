@@ -1,0 +1,10 @@
+[package]
+name = "system_models"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { workspace = true }
+sea-orm = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }

@@ -5,8 +5,11 @@ edition = "2021"
 
 [workspace]
 resolver = "2"
+members = ["system_models"]
 
 [workspace.dependencies]
+system_models = { path = "system_models" }
+
 salvo = { version = "0.78", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -17,15 +20,20 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["local-time", "time"] }
 clap = "4.5"
 validator = { version = "0.20", features = ["derive"] }
-ulid = "1.2.1"
 jsonwebtoken = "9"
 anyhow = "1.0"
 figment = { version = "0.10", features = ["toml", "env"] }
 argon2 = "0.5"
 cookie = "0.18"
-sea-orm = { version = "1.1", features = ["sqlx-postgres", "macros", "runtime-tokio-rustls", "debug-print"]}
-rand = "0.9"
+sea-orm = { version = "1.1", features = [
+    "sqlx-postgres",
+    "macros",
+    "runtime-tokio-rustls",
+    "debug-print",
+] }
 thiserror = "2.0.12"
+uuid = { version = "1.16.0", features = ["v7"] }
+rand = "0.9.1"
 
 [dependencies]
 clap = { workspace = true, features = ["derive"] }
@@ -36,7 +44,6 @@ time = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-ulid = { workspace = true, features = ["serde", "uuid"] }
 validator = { workspace = true }
 jsonwebtoken = { workspace = true }
 anyhow = { workspace = true }
@@ -44,6 +51,7 @@ figment = { workspace = true }
 cookie = { workspace = true }
 argon2 = { workspace = true }
 sea-orm = { workspace = true }
-rand = { workspace = true }
 thiserror = { workspace = true }
-uuid = { version = "1.16.0", features = ["v7"] }
+uuid = { workspace = true }
+rand = { workspace = true }
+system_models = { workspace = true }

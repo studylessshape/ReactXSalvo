@@ -6,9 +6,7 @@ pub mod role_menu_element;
 pub mod role_user;
 pub mod user;
 
-use anyhow::Result;
-
-use crate::db::conn;
+use sea_orm::DatabaseConnection;
 
 macro_rules! create_table {
     ($conn: expr, $($entity: expr),+) => {{
@@ -25,8 +23,7 @@ macro_rules! create_table {
     }};
 }
 
-pub async fn init() -> Result<()> {
-    let conn = conn().await?;
+pub async fn init(conn: &DatabaseConnection) {
     create_table!(
         conn,
         user::Entity,
@@ -37,7 +34,4 @@ pub async fn init() -> Result<()> {
         role_menu_element::Entity,
         role_user::Entity
     );
-
-    conn.close().await?;
-    Ok(())
 }

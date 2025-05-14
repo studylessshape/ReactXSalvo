@@ -8,3 +8,10 @@ pub async fn conn() -> Result<DatabaseConnection> {
     let db = Database::connect(opt).await?;
     Ok(db)
 }
+
+pub async fn init_db() -> Result<()> {
+    let conn = conn().await?;
+    system_models::init(&conn).await;
+    conn.close().await?;
+    Ok(())
+}

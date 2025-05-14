@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::error::AppError;
 use crate::hoops::jwt::JwtClaims;
-use crate::model::user;
+use system_models::user;
 use crate::{db, json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
@@ -45,7 +45,7 @@ pub async fn add_user(user: JsonBody<AddUserInData>) -> JsonResult<UserOutData> 
 }
 
 #[derive(Serialize, ToSchema, Default, Debug, FromQueryResult, DerivePartialModel)]
-#[sea_orm(entity = "crate::model::user::Entity")]
+#[sea_orm(entity = "system_models::user::Entity")]
 pub struct UserInfo {
     pub id: String,
     pub username: String,

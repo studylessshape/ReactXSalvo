@@ -5,7 +5,7 @@ use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 
 use crate::hoops::jwt;
-use crate::model::user;
+use system_models::user;
 use crate::{config, json_ok, utils, JsonResult};
 
 #[derive(Deserialize, ToSchema, Default, Debug)]
