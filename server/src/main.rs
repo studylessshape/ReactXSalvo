@@ -2,8 +2,8 @@ use std::{fs, path::PathBuf};
 
 use ::time::{macros::format_description, UtcOffset};
 use clap::Parser;
-use salvo::{oapi::extract::QueryParam, prelude::*};
-use server::{cli::StartArgs, config, db, routers::create_router};
+use salvo::{oapi::extract::*, prelude::*};
+use server::{cli::StartArgs, config, db, api::create_api_router};
 use tracing_subscriber::fmt::time::OffsetTime;
 
 #[endpoint]
@@ -13,8 +13,8 @@ async fn hello(name: QueryParam<String, false>) -> String {
 
 #[tokio::main]
 async fn main() {
-    tracing_init();
     config::init();
+    tracing_init();
     db::init_db().await.unwrap();
     let _args = StartArgs::parse();
 
@@ -76,7 +76,7 @@ fn router_build() -> Router {
     let static_paths = static_dirs("./static").unwrap();
     tracing::info!("Static paths: {:?}", static_paths);
 
-    let mut router = Router::new().push(create_router());
+    let mut router = Router::new().push(create_api_router());
     let doc = OpenApi::new("server api", "0.0.1").merge_router(&router);
 
     router = router

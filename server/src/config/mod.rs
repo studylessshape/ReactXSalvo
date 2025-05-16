@@ -1,8 +1,11 @@
+pub mod log_config;
+
 use std::sync::OnceLock;
 
 use figment::providers::{Env, Format, Toml};
 use figment::Figment;
-use serde::Deserialize;
+use log_config::LogConfig;
+use serde::{Deserialize, Serialize};
 
 pub static CONFIG: OnceLock<ServerConfig> = OnceLock::new();
 
@@ -29,28 +32,33 @@ pub fn init() {
         .expect("config should be set");
 }
 
+pub fn default_true() -> bool {
+    true
+}
+
 pub fn get() -> &'static ServerConfig {
     CONFIG.get().expect("config should be set")
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct JwtConfig {
     pub secret: String,
     pub expiry: i64,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct DbConfig {
     pub url: String,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct ServerConfig {
     #[serde(default = "default_listen_addr")]
     pub listen_addr: String,
 
     pub jwt: JwtConfig,
     pub db: DbConfig,
+    pub log: LogConfig,
 }
 
 fn default_listen_addr() -> String {

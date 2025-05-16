@@ -20,7 +20,7 @@ pub fn auth_hoop(config: &JwtConfig) -> JwtAuth<JwtClaims, ConstDecoder> {
     .finders(vec![
         Box::new(HeaderFinder::new()),
         Box::new(QueryFinder::new("token")),
-        Box::new(CookieFinder::new("jwt_token")),
+        Box::new(CookieFinder::new("token")),
     ])
     .force_passed(false)
 }

@@ -10,9 +10,9 @@ pub struct Model {
     pub key: String,
     pub name: String,
     /// 状态（1：正常，0：隐藏）
-    pub visible: i8,
+    pub visible: i32,
     /// 状态（1：正常，0：停用）
-    pub status: i8,
+    pub status: i32,
     pub remark: Option<String>,
     pub create_time: DateTime,
     pub update_time: Option<DateTime>,

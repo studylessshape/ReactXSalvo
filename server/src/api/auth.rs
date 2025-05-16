@@ -54,7 +54,7 @@ pub async fn post_login(data: JsonBody<LoginData>, res: &mut Response) -> JsonRe
         token,
         exp,
     };
-    let cookie = Cookie::build(("jwt_token", odata.token.clone()))
+    let cookie = Cookie::build(("token", odata.token.clone()))
         .path("/")
         .http_only(true)
         // .expires(OffsetDateTime::from_unix_timestamp(exp).map_err(|e| StatusError::internal_server_error().brief(format!("{e}")))?)

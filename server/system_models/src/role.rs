@@ -13,7 +13,7 @@ pub struct Model {
     /// 角色名称
     pub name: String,
     /// 角色状态（1：正常 2：停用）
-    pub status: i8,
+    pub status: i32,
     /// 备注
     pub remark: Option<String>,
     /// 创建时间

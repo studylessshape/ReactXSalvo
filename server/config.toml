@@ -5,7 +5,7 @@ url = "postgres://postgres:123456@127.0.0.1:5432/reactxsalvo"
 # url = "mysql://root:123456@127.0.0.1:3306/reactxsalvo"
 
 [jwt]
-secret = "yoursecret"
+secret = "0196cdedd09272cea1032cbbb5dad044"
 expiry = 1296000
 
 [log]

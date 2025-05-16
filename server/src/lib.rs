@@ -1,6 +1,6 @@
 pub mod cli;
 pub mod utils;
-pub mod routers;
+pub mod api;
 pub mod hoops;
 pub mod config;
 pub mod db;

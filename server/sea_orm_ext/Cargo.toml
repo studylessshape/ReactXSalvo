@@ -1,11 +1,9 @@
 [package]
-name = "system_models"
+name = "sea_orm_ext"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
 serde = { workspace = true }
 sea-orm = { workspace = true }
-uuid = { workspace = true }
-tracing = { workspace = true }
-sea_orm_ext = { workspace = true }
+sea_orm_ext_macro = { workspace = true }

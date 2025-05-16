@@ -1,5 +1,6 @@
+use sea_orm::{entity::prelude::*, FromQueryResult, Statement};
+use sea_orm_ext::InsertModel;
 use serde::{Deserialize, Serialize};
-use sea_orm::entity::prelude::*;
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq, DeriveEntityModel)]
 #[sea_orm(table_name = "sys_user")]
@@ -10,10 +11,12 @@ pub struct Model {
     pub account: String,
     pub username: String,
     pub password: String,
-    pub status: i8,
+    #[sea_orm(default_value = 1)]
+    pub status: i32,
     pub create_time: DateTime,
     pub update_time: Option<DateTime>,
     pub remark: Option<String>,
+    #[sea_orm(default_value = false)]
     pub is_deleted: bool,
 }
 
@@ -21,3 +24,12 @@ pub struct Model {
 pub enum Relation {}
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(Debug, Clone, InsertModel)]
+pub struct NewUser {
+    pub id: Uuid,
+    pub account: String,
+    pub username: String,
+    pub password: String,
+    pub create_time: DateTime,
+}

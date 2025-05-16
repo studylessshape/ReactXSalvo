@@ -23,9 +23,9 @@ pub struct Model {
     /// 排序
     pub sort: u32,
     /// 菜单状态（1：正常，0：隐藏）
-    pub visible: i8,
+    pub visible: i32,
     /// 菜单状态（1：正常，0：停用）
-    pub status: i8,
+    pub status: i32,
     /// 备注
     pub remark: Option<String>,
     /// 创建时间

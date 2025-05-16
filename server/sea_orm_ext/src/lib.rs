@@ -1,0 +1,60 @@
+use sea_orm::{DatabaseConnection, ModelTrait};
+
+pub enum InsertValue<T> {
+    Set(T),
+    Unchanged(T),
+    NotSet,
+    Default,
+}
+
+pub trait InsertModelTrait {
+    type Model: ModelTrait;
+    fn insert(&self, conn: &DatabaseConnection) -> impl std::future::Future<Output = Result<Self::Model, sea_orm::DbErr>> + Send;
+}
+
+pub use sea_orm_ext_macro::InsertModel;
+
+mod test {
+    mod user {
+        use sea_orm::{entity::prelude::*, FromQueryResult, Statement};
+
+        use crate::{test::user, *};
+
+        use crate as sea_orm_ext;
+
+        #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
+        #[sea_orm(table_name = "user")]
+        pub struct Model {
+            #[sea_orm(primary_key)]
+            pub id: i32,
+            pub name: String,
+            #[sea_orm(default = 1)]
+            pub status: i8,
+        }
+
+        #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+        pub enum Relation {}
+        impl ActiveModelBehavior for ActiveModel {}
+
+        #[derive(Debug, Clone, InsertModel)]
+        #[sea_orm_ext(mod = user)]
+        pub struct InsertModel {
+            pub id: i32,
+            pub name: String,
+        }
+
+        // impl InsertModelTrait for InsertModel  {
+        //     type Model = Model;
+        //     async fn insert(&self, conn: &DatabaseConnection) -> Result<Self::Model, sea_orm::DbErr> {
+        //         let model = user::Model::find_by_statement(Statement::from_sql_and_values(conn.get_database_backend(), r#"
+        //             INSERT INTO sys_user (id, name) VALUES($1,$2) REUTRNING *;
+        //         "#, [self.id.into(), self.name.clone().into()])).one(conn).await?;
+        //         if let Some(model) = model {
+        //             Ok(model)
+        //         } else {
+        //             Err(sea_orm::DbErr::Exec(sea_orm::RuntimeErr::Internal("Insert User Failed.".to_string())))
+        //         }
+        //     }
+        // }
+    }
+}

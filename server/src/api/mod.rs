@@ -6,7 +6,7 @@ use crate::{config, hoops::jwt};
 pub mod auth;
 pub mod user;
 
-pub fn create_router() -> Router {
+pub fn create_api_router() -> Router {
     Router::with_path("/api")
         .push(
             Router::with_path("/auth")
