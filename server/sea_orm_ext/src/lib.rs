@@ -60,9 +60,10 @@ pub trait InsertModelTrait {
 
 pub use sea_orm_ext_macro::InsertModel;
 
+#[cfg(test)]
 mod test {
     mod user {
-        use sea_orm::{entity::prelude::*, FromQueryResult, Statement};
+        use sea_orm::entity::prelude::*;
 
         use crate::{test::user, *};
 

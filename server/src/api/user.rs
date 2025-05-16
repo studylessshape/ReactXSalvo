@@ -19,17 +19,17 @@ pub struct AddUserInData {
     pub password: String,
 }
 
-#[derive(Serialize, ToSchema, DerivePartialModel, FromQueryResult)]
+#[derive(Deserialize, Serialize, ToSchema, DerivePartialModel, FromQueryResult)]
 #[sea_orm(entity = "system_models::user::Entity")]
-pub struct UserOutData {
+pub struct UserId {
    pub id: Uuid,
 }
 
 #[endpoint(tags("User"))]
-pub async fn add_user(user: JsonBody<AddUserInData>, _token: CookieParam<String, true>) -> JsonResult<UserOutData> {
+pub async fn add_user(user: JsonBody<AddUserInData>, _token: CookieParam<String, true>) -> JsonResult<UserId> {
     let AddUserInData { account, password } = user.into_inner();
     let conn = crate::db::conn().await?;
-    if user::Entity::find().filter(user::Column::Account.eq(&account)).into_partial_model::<UserOutData>().one(&conn).await?.is_some() {
+    if user::Entity::find().filter(user::Column::Account.eq(&account)).into_partial_model::<UserId>().one(&conn).await?.is_some() {
         return Err(AppError::Public("账户已存在".to_string()));
     }
     let id = Uuid::now_v7();
@@ -41,7 +41,7 @@ pub async fn add_user(user: JsonBody<AddUserInData>, _token: CookieParam<String,
         create_time: chrono::Local::now().naive_utc(),
     };
     let db_user = new_user.insert(&conn).await?;
-    json_ok(UserOutData { id: db_user.id })
+    json_ok(UserId { id: db_user.id })
 }
 
 #[derive(Serialize, ToSchema, Default, Debug, FromQueryResult, DerivePartialModel)]
@@ -124,4 +124,15 @@ pub async fn get_users(params: QueryParam<UserInfoQuerty>, _token: CookieParam<S
         .limit(params.page_size).into_partial_model::<UserInfo>().all(&conn).await?;
 
     json_ok(GetUserOutData { total, data })
+}
+
+#[endpoint(tags("User"))]
+pub async fn del_user(id: JsonBody<UserId>) -> JsonResult<()> {
+    let id = id.into_inner().id;
+    let conn = db::conn().await?;
+    let del_res = user::Entity::delete_by_id(id).exec(&conn).await?;
+    if del_res.rows_affected == 0 {
+        return Err(AppError::Public("删除失败".to_string()));
+    }
+    json_ok(())
 }

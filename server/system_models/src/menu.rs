@@ -1,4 +1,5 @@
 use sea_orm::entity::prelude::*;
+use sea_orm_ext::InsertModel;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, DeriveEntityModel)]
@@ -15,7 +16,7 @@ pub struct Model {
     /// 菜单名称
     pub name: String,
     /// 菜单类型（1：目录，2：菜单，3：按钮）
-    pub menu_type: i8,
+    pub menu_type: i32,
     /// 路由地址
     pub path: String,
     /// 图标
@@ -23,8 +24,10 @@ pub struct Model {
     /// 排序
     pub sort: u32,
     /// 菜单状态（1：正常，0：隐藏）
+    #[sea_orm(default = 1)]
     pub visible: i32,
     /// 菜单状态（1：正常，0：停用）
+    #[sea_orm(default = 1)]
     pub status: i32,
     /// 备注
     pub remark: Option<String>,
@@ -32,6 +35,7 @@ pub struct Model {
     pub create_time: DateTime,
     /// 更新时间
     pub update_time: Option<DateTime>,
+    #[sea_orm(default = false)]
     pub is_deleted: bool,
 }
 
@@ -63,3 +67,17 @@ impl Related<super::role_menu::Entity> for Entity {
 }
 
 impl ActiveModelBehavior for ActiveModel {}
+
+#[derive(Debug, InsertModel)]
+pub struct InsertModel {
+    pub id: Uuid,
+    pub parent_id: Option<Uuid>,
+    pub key: String,
+    pub name: String,
+    pub menu_type: i32,
+    pub path: String,
+    pub icon: Option<String>,
+    pub sort: u32,
+    pub remark: Option<String>,
+    pub create_time: DateTime,
+}

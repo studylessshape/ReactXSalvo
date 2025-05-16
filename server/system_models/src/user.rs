@@ -1,4 +1,4 @@
-use sea_orm::{entity::prelude::*, FromQueryResult, Statement};
+use sea_orm::entity::prelude::*;
 use sea_orm_ext::InsertModel;
 use serde::{Deserialize, Serialize};
 

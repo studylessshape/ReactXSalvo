@@ -68,6 +68,7 @@ impl InsertModelBuilder {
             impl sea_orm_ext::InsertModelTrait for #ident {
                 type Model = #model_path;
                 async fn insert(&self, conn: &sea_orm::DatabaseConnection) -> Result<Self::Model, sea_orm::DbErr> {
+                    use sea_orm::{Statement, FromQueryResult};
                     let table_name = #entity_path.table_name();
                     let sql = format!("INSERT INTO {} ({}) VALUES({}) RETURNING *;", table_name, #column_names, #values_placeholders); 
                     let model = #model_path::find_by_statement(Statement::from_sql_and_values(
