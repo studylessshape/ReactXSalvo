@@ -27,7 +27,7 @@ struct MenuId {
 }
 
 #[endpoint(tags("Menu"))]
-pub async fn add_menu(data: JsonBody<AddMenuInData>) -> JsonResult<MenuId> {
+pub async fn add_menu(_token: CookieParam<String, true>, data: JsonBody<AddMenuInData>) -> JsonResult<MenuId> {
     let AddMenuInData {
         parent_id,
         key,
@@ -100,7 +100,7 @@ impl From<menu::Model> for MenuModel {
 }
 
 #[endpoint(tags("Menu"))]
-pub async fn update_menu(data: JsonBody<MenuModel>) -> JsonResult<()> {
+pub async fn update_menu(_token: CookieParam<String, true>, data: JsonBody<MenuModel>) -> JsonResult<()> {
     let MenuModel { id, parent_id, key, name, menu_type, path, icon, sort, remark,.. } = data.into_inner();
 
     let conn = db::conn().await?;
@@ -125,7 +125,7 @@ pub async fn update_menu(data: JsonBody<MenuModel>) -> JsonResult<()> {
 }
 
 #[endpoint(tags("Menu"))]
-pub async fn delete_menu(data: JsonBody<MenuId>) -> JsonResult<()> {
+pub async fn delete_menu(_token: CookieParam<String, true>, data: JsonBody<MenuId>) -> JsonResult<()> {
     let MenuId {id} = data.into_inner();
     let conn = db::conn().await?;
     let res = menu::Entity::delete_by_id(id).exec(&conn).await?;
@@ -137,7 +137,7 @@ pub async fn delete_menu(data: JsonBody<MenuId>) -> JsonResult<()> {
 }
 
 #[endpoint(tags("Menu"))]
-pub async fn get_menu() -> JsonResult<Vec<MenuModel>> {
+pub async fn get_menu(_token: CookieParam<String, true>) -> JsonResult<Vec<MenuModel>> {
     let conn = db::conn().await?;
     let res = menu::Entity::find().into_partial_model::<MenuModel>().all(&conn).await?;
     json_ok(res)
