@@ -1,19 +1,12 @@
-use sea_orm::{DatabaseConnection, ModelTrait};
-
-pub enum InsertValue<T> {
-    Set(T),
-    Unchanged(T),
-    NotSet,
-    Default,
-}
+use sea_orm::{ActiveModelTrait, DatabaseConnection, ModelTrait};
 
 /// It is recommended to implement using `#[derive(Clone, InsertModel)]`. But also can implement manually.
-/// 
+///
 /// ```rust
 /// mod user {
 ///     use sea_orm::{entity::prelude::*, FromQueryResult, Statement};
 ///     use sea_orm_ext::InsertModelTrait;
-/// 
+///
 ///     #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
 ///     #[sea_orm(table_name = "user")]
 ///     pub struct Model {
@@ -23,17 +16,17 @@ pub enum InsertValue<T> {
 ///         #[sea_orm(default = 1)]
 ///         pub status: i32,
 ///     }
-/// 
+///
 ///     #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 ///     pub enum Relation {}
 ///     impl ActiveModelBehavior for ActiveModel {}
-/// 
+///
 ///     #[derive(Debug, Clone)]
 ///     pub struct InsertModel {
 ///         pub id: i32,
 ///         pub name: String,
 ///     }
-/// 
+///
 ///     impl InsertModelTrait for InsertModel  {
 ///         type Model = Model;
 ///         async fn insert(&self, conn: &DatabaseConnection) -> Result<Self::Model, sea_orm::DbErr> {
@@ -55,21 +48,34 @@ pub enum InsertValue<T> {
 /// ```
 pub trait InsertModelTrait {
     type Model: ModelTrait;
-    fn insert(&self, conn: &DatabaseConnection) -> impl std::future::Future<Output = Result<Self::Model, sea_orm::DbErr>> + Send;
+    fn insert(
+        &self,
+        conn: &DatabaseConnection,
+    ) -> impl std::future::Future<Output = Result<Self::Model, sea_orm::DbErr>> + Send;
 }
 
-pub use sea_orm_ext_macro::InsertModel;
+/// Custom insert model to database.
+pub trait InsertActiveModelTrait: ActiveModelTrait {
+    type Model: ModelTrait;
+    fn insert_active(
+        &self,
+        conn: &DatabaseConnection,
+    ) -> impl std::future::Future<Output = Result<Self::Model, sea_orm::DbErr>> + Send;
+}
+
+pub use sea_orm_ext_macro::*;
 
 #[cfg(test)]
 mod test {
     mod user {
         use sea_orm::entity::prelude::*;
+        use sea_orm_ext_macro::InsertActiveModel;
 
         use crate::{test::user, *};
 
         use crate as sea_orm_ext;
 
-        #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
+        #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, InsertActiveModel)]
         #[sea_orm(table_name = "user")]
         pub struct Model {
             #[sea_orm(primary_key)]
