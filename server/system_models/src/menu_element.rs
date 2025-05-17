@@ -11,15 +11,15 @@ pub struct Model {
     pub key: String,
     pub name: String,
     /// 状态（1：正常，0：隐藏）
-    #[sea_orm(default = 1)]
+    #[sea_orm(default_value = 1)]
     pub visible: i32,
     /// 状态（1：正常，0：停用）
-    #[sea_orm(default = 1)]
+    #[sea_orm(default_value = 1)]
     pub status: i32,
     pub remark: Option<String>,
     pub create_time: DateTime,
     pub update_time: Option<DateTime>,
-    #[sea_orm(default = false)]
+    #[sea_orm(default_value = false)]
     pub is_deleted: bool,
 }
 
@@ -35,6 +35,7 @@ impl RelationTrait for Relation {
             Self::Menu => Entity::belongs_to(super::menu::Entity)
                 .from(Column::MenuId)
                 .to(super::menu::Column::Id)
+                .on_delete(ForeignKeyAction::Cascade)
                 .into(),
             Self::RoleMenuElement => Entity::has_many(super::role_menu_element::Entity).into(),
         }

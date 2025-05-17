@@ -23,10 +23,12 @@ impl RelationTrait for Relation {
             Self::Role => Entity::belongs_to(super::role::Entity)
                 .from(Column::RoleId)
                 .to(super::role::Column::Id)
+                .on_delete(ForeignKeyAction::Cascade)
                 .into(),
             Self::Menu => Entity::belongs_to(super::menu::Entity)
                 .from(Column::MenuId)
                 .to(super::menu::Column::Id)
+                .on_delete(ForeignKeyAction::Cascade)
                 .into(),
         }
     }

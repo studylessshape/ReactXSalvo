@@ -18,7 +18,7 @@ struct AddMenuInData {
     menu_type: i32,
     path: String,
     icon: Option<String>,
-    sort: u32,
+    sort: i32,
     remark: Option<String>,
 }
 
@@ -74,7 +74,7 @@ pub struct MenuModel {
     pub menu_type: i32,
     pub path: String,
     pub icon: Option<String>,
-    pub sort: u32,
+    pub sort: i32,
     pub visible: i32,
     pub status: i32,
     pub remark: Option<String>,

@@ -14,6 +14,7 @@ pub struct Model {
     /// 角色名称
     pub name: String,
     /// 角色状态（1：正常 2：停用）
+    #[sea_orm(default_value = 1)]
     pub status: i32,
     /// 备注
     pub remark: Option<String>,
@@ -21,6 +22,7 @@ pub struct Model {
     pub create_time: DateTime,
     /// 更新时间
     pub update_time: Option<DateTime>,
+    #[sea_orm(default_value = false)]
     pub is_deleted: bool,
 }
 

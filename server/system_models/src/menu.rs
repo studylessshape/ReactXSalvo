@@ -1,4 +1,4 @@
-use sea_orm::entity::prelude::*;
+use sea_orm::{entity::prelude::*};
 use sea_orm_ext::{InsertActiveModel, InsertModel};
 use serde::{Deserialize, Serialize};
 
@@ -22,12 +22,12 @@ pub struct Model {
     /// 图标
     pub icon: Option<String>,
     /// 排序
-    pub sort: u32,
+    pub sort: i32,
     /// 菜单状态（1：正常，0：隐藏）
-    #[sea_orm(default = 1)]
+    #[sea_orm(default_value = 1)]
     pub visible: i32,
     /// 菜单状态（1：正常，0：停用）
-    #[sea_orm(default = 1)]
+    #[sea_orm(default_value = 1)]
     pub status: i32,
     /// 备注
     pub remark: Option<String>,
@@ -35,7 +35,7 @@ pub struct Model {
     pub create_time: DateTime,
     /// 更新时间
     pub update_time: Option<DateTime>,
-    #[sea_orm(default = false)]
+    #[sea_orm(default_value = false)]
     pub is_deleted: bool,
 }
 
@@ -77,7 +77,7 @@ pub struct InsertModel {
     pub menu_type: i32,
     pub path: String,
     pub icon: Option<String>,
-    pub sort: u32,
+    pub sort: i32,
     pub remark: Option<String>,
     pub create_time: DateTime,
 }

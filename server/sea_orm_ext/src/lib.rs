@@ -13,7 +13,7 @@ use sea_orm::{ActiveModelTrait, DatabaseConnection, ModelTrait};
 ///         #[sea_orm(primary_key)]
 ///         pub id: i32,
 ///         pub name: String,
-///         #[sea_orm(default = 1)]
+///         #[sea_orm(default_value = 1)]
 ///         pub status: i32,
 ///     }
 ///
