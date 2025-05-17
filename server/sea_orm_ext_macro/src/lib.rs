@@ -1,4 +1,5 @@
 mod insert_model;
+mod insert_active_model;
 
 use proc_macro::TokenStream;
 use syn::{parse_macro_input, DeriveInput};
@@ -57,9 +58,26 @@ use quote::ToTokens;
 ///     }
 /// }
 /// ```
+/// 
+/// ## Todo
+/// 
+/// - [ ] Support custom column name.
 #[proc_macro_derive(InsertModel, attributes(sea_orm_ext))]
 pub fn derive_insert_model(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let builder = insert_model::InsertModelBuilder::new(input);
     builder.into_token_stream().into()
+}
+
+/// Automatically derive the `InsertActiveModel` trait for the given struct.
+/// 
+/// `NotSet` fields will be ignored.
+/// 
+/// ## Todo
+/// 
+/// - [ ] Support must set fields which type is not `Option<T>`.
+#[proc_macro_derive(InsertActiveModel, attributes(sea_orm))]
+pub fn derive_insert_active_model(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    insert_active_model::expand_insert_active_model(input).into()
 }

@@ -1,7 +1,8 @@
+use sea_orm_ext::InsertActiveModel;
 use serde::{Deserialize, Serialize};
 use sea_orm::entity::prelude::*;
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize, DeriveEntityModel)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize, DeriveEntityModel, InsertActiveModel)]
 #[sea_orm(table_name = "sys_role")]
 pub struct Model {
     /// 主键 ID

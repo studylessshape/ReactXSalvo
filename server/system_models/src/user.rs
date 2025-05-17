@@ -1,8 +1,8 @@
 use sea_orm::entity::prelude::*;
-use sea_orm_ext::InsertModel;
+use sea_orm_ext::{InsertActiveModel, InsertModel};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq, DeriveEntityModel)]
+#[derive(Debug, Clone, Default, Deserialize, Serialize, PartialEq, DeriveEntityModel, InsertActiveModel)]
 #[sea_orm(table_name = "sys_user")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]

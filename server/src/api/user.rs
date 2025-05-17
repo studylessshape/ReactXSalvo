@@ -76,7 +76,7 @@ pub async fn get_user_profile(depot: &mut Depot, _token: CookieParam<String, tru
 
 #[derive(Debug, Deserialize, ToSchema)]
 struct UserInfoQuerty {
-    pub id: Option<String>,
+    pub id: Option<Uuid>,
     pub username: Option<String>,
     pub page: u64,
     pub page_size: u64,
@@ -111,7 +111,7 @@ pub async fn get_users(params: QueryParam<UserInfoQuerty>, _token: CookieParam<S
     let conn = db::conn().await?;
     let mut query = user::Entity::find();
     if let Some(id) = &params.id {
-        query = query.filter(user::Column::Id.eq(Uuid::parse_str(id)?));
+        query = query.filter(user::Column::Id.eq(*id));
     }
 
     if let Some(username) = &params.username {

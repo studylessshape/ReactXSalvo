@@ -1,8 +1,8 @@
 use sea_orm::entity::prelude::*;
-use sea_orm_ext::InsertModel;
+use sea_orm_ext::{InsertActiveModel, InsertModel};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, DeriveEntityModel)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize, DeriveEntityModel, InsertActiveModel)]
 #[sea_orm(table_name = "sys_menu")]
 pub struct Model {
     /// 主键ID
